@@ -1,0 +1,48 @@
+微服务dubbo的理解
+    把consumer和privider隔离开做成单独的项目 在做一个api对外  consumer和privider通过实现和调用api做交互（api被实现或者调用都是祖册到zk的基础上）
+
+实现端（provider）
+@EnableDubbo 在AyUserServiceApplication启动类中添加 目的是启用dubbo框架
+@Service(version = "1.0")  这个service不是spring提供的 是dubbo提供的 目的是把类注册到zk 对外提供服务 version是对应得版本号（需要和consumer端的一致）
+pom添加
+        <!--ay-user-api工程依赖-->
+        <dependency>
+            <groupId>com.example</groupId>
+            <artifactId>ay-user-api</artifactId>
+            <version>0.0.1</version>
+        </dependency>
+        <!--springboot 整合dubbo 开始 -->
+        <dependency>
+            <groupId>org.apache.dubbo</groupId>
+            <artifactId>dubbo-spring-boot-starter</artifactId>
+            <version>2.7.5</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.dubbo</groupId>
+            <artifactId>dubbo-dependencies-zookeeper</artifactId>
+            <version>2.7.5</version>
+            <type>pom</type>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-log4j12</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <!--springboot 整合dubbo 结束-->
+ 配置哦文件添加
+ dubbo.application.name=annotation-springboot-provider    provider端
+ dubbo.registry.address=zookeeper://127.0.0.1:2181        zk地址
+ dubbo.protocol.name=dubbo                                调用协议地址
+ dubbo.protocol.port=20880                                dubbo协议缺省端口为20880 配置-1自动分配
+ dubbo.scan.base-packages=com.example.demo                包路径
+
+客户端(consumer)
+@EnableDubbo 在AyUserServiceApplication启动类中添加 目的是启用dubbo框架
+@Reference(version = "1.0")   是dubbo提供的 实现注册到zk的类
+ 如：private AyUserDubboService ayUserDubboService;
+pom引用和provider一致
+配置文件
+dubbo.application.name=annotation-springboot-consumer
+dubbo.registry.address=zookeeper://127.0.0.1:2181
+dubbo.consumer.check=false

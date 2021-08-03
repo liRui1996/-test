@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+<!--    定义job对象-->
+    <bean id="taskJob" class="com.example.demo.quartz.TeskTask"/>
+<!--    定义jobDetail对象-->
+    <bean id="JobDetail" class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+<!--        目标对象-->
+        <property name="targetObject">
+            <ref bean="taskJob"/>
+        </property>
+<!--        目标方法-->
+        <property name="targetMethod">  <!-- 要执行的方法名称 -->
+            <value>run</value>
+        </property>
+    </bean>
+    <!--  调度触发器  -->
+    <bean id="myTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+<!--        指定使用jobDetail-->
+        <property name="jobDetail">
+            <ref bean="JobDetail"/>
+        </property>
+<!--        定义触发规则 每十秒执行一次-->
+        <property name="cronExpression">
+            <value>0/10 * * * * ?</value>
+        </property>
+    </bean>
+
+    <!--  调度工厂  -->
+    <bean id="scheduler" lazy-init="true" autowire="no" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+    <property name="triggers">
+        <list>
+            <ref bean="myTrigger"/>
+        </list>
+    </property>
+    </bean>
+
+</beans>

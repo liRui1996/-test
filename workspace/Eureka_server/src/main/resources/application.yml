@@ -1,0 +1,14 @@
+server:
+  port: 8765
+eureka:
+  instance:
+    hostname: EurekaServer1
+  client:
+    register-with-eureka: false
+    fetch-registry: true
+    service-url:
+      defaultZone: http://EurekaServer2:8766/eureka
+
+  server:
+    enable-self-preservation: true  #开启自我保护机制默认是开启
+    eviction-interval-timer-in-ms: 5000 #每个五秒进行一次服务处列表清理

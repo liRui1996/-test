@@ -1,0 +1,10 @@
+server:
+  port: 8999
+
+spring:
+  application:
+    name: Eureka-provider
+eureka:
+  client:
+    service-url:
+      defaultZone: http://EurekaServer2:8766/eureka,http://EurekaServer1:8765/eureka
